@@ -6,20 +6,28 @@ import io
 import cv2
 import numpy
 
-#Test camera functionality
-with picamera.PiCamera() as camera :
-    camera.resolution = (640,480)
-    camera.vflip = False
-    camera.hflip = False
-    camera.brightness = 60
-    with picamera.array.PiRGBArray(camera) as rawCapture :
-        sleep(1.0) #Camera WarmUp
-        camera.capture(rawCapture, format="bgr")
-        image = rawCapture.array
+# Initialize the camera and camera capture
+camera = picamera.PiCamera()
+rawCapture = picamera.array.PiRGBArray(camera, size=(640,480))
 
-        # Display the image on screen and wait for a keypress
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
+camera.resolution = (640,480)
+camera.vflip = False
+camera.hflip = False
+camera.framerate = 32
+camera.brightness = 60
 
+# Camera WarmUp
+sleep(1.0)
+
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+    image = frame.array
+
+    cv2.imshow("Frame", image)
+    key = cv2.waitKey(1) & 0xFF
+
+    rawCapture.truncate(0)
+
+    if key == ord("q"):
+            break
 
 print("Hello World")
