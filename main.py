@@ -21,6 +21,7 @@ sleep(1.0)
 
 # Pulled from opencv default data
 face = cv2.CascadeClassifier('./dataset/haarcascade_frontalface_default.xml')
+profileFace = cv2.CascadeClassifier('./dataset/haarcascade_profileface.xml')
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
@@ -32,17 +33,33 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # Put rectangle in every face it picks up
     for (x,y,w,h) in faces:
-        cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),2)
+        cv2.rectangle(image,(x,y),(x+w,y+h),(255,255,0),2)
         roi_gray = grayImage[y:y+h, x:x+w]
         roi_color = image[y:y+h, x:x+w]
+
+    # If we don't find any faces, try profile face detection
+    # I honestly don't know the difference and will need to look it up TODO
+    if len(faces) == 0 :
+        faces = profileFace.detectMultiScale(image, 1.3, 5)
+
+
+        # Put rectangle in every face it picks up
+        for (x,y,w,h) in faces:
+            cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),2)
+            roi_gray = grayImage[y:y+h, x:x+w]
+            roi_color = image[y:y+h, x:x+w]
     
     cv2.imshow('Stream',image)
 
-    key = cv2.waitKey(1) & 0xFF
+    # Did we see an image?
+    imageSeen = ( len(faces) != 0 )
+    print(imageSeen)
 
     # Clear the captured frame
     rawCapture.truncate(0)
 
+    # User input to stop (we wait for 'q' key)
+    key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         cv2.destroyAllWindows()
         break
