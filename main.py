@@ -45,34 +45,31 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # use dataset training to determine if a face is present
     faces = face.detectMultiScale(image, 1.3, 5)
 
-    # Put rectangle in every face it picks up
-    for (x,y,w,h) in faces:
-        cv2.rectangle(image,(x,y),(x+w,y+h),(255,255,0),2)
-        roi_gray = grayImage[y:y+h, x:x+w]
-        roi_color = image[y:y+h, x:x+w]
+    imageSeen = ( len(faces) != 0 )
 
     # If we don't find any faces, try profile face detection
     # I honestly don't know the difference and will need to look it up TODO
-    if len(faces) == 0 :
+    if False == imageSeen:
         faces = profileFace.detectMultiScale(image, 1.3, 5)
 
-
+    # Check again to see if an image was seen
+    imageSeen = ( len(faces) != 0 )
+    
+    # Did we see an image?
+    if imageSeen:
         # Put rectangle in every face it picks up
         for (x,y,w,h) in faces:
-            cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),2)
+            cv2.rectangle(image,(x,y),(x+w,y+h),(255,255,0),2)
             roi_gray = grayImage[y:y+h, x:x+w]
             roi_color = image[y:y+h, x:x+w]
-    
-    cv2.imshow('Stream',image)
+            curTime = time.time()
 
-    # Did we see an image?
-    imageSeen = ( len(faces) != 0 )
-    if imageSeen:
-        curTime = time.time()
         # has it been 5 minutes since last play?
         if (curTime ) > lastTime + 300:
             lastTime = curTime
             playSound('./sounds/ric_flair_woo.wav')
+
+    cv2.imshow('Stream',image)
 
     # Clear the captured frame
     rawCapture.truncate(0)
