@@ -6,9 +6,20 @@ import io
 import cv2
 import numpy
 
+# This might be over-kill, but this library will do the audio playing
+# Perhaps find one that isn't as expansive as this one
+import pygame
+
+def playSound(soundFile):
+    pygame.mixer.music.load(soundFile)
+    pygame.mixer.music.play()
+
 # Initialize the camera and camera capture
 camera = picamera.PiCamera()
 rawCapture = picamera.array.PiRGBArray(camera, size=(640,480))
+
+# Initialize pygame which will be used to play audio
+pygame.init()
 
 camera.resolution = (640,480)
 camera.vflip = False
@@ -54,6 +65,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # Did we see an image?
     imageSeen = ( len(faces) != 0 )
     print(imageSeen)
+    if imageSeen:
+        playSound('./sounds/ric_flair_woo.wav')
 
     # Clear the captured frame
     rawCapture.truncate(0)
