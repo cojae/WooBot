@@ -1,6 +1,6 @@
 import picamera
 import picamera.array
-from time import sleep
+import time 
 
 import io
 import cv2
@@ -28,11 +28,14 @@ camera.framerate = 32
 camera.brightness = 60
 
 # Camera WarmUp
-sleep(1.0)
+time.sleep(1.0)
 
 # Pulled from opencv default data
 face = cv2.CascadeClassifier('./dataset/haarcascade_frontalface_default.xml')
 profileFace = cv2.CascadeClassifier('./dataset/haarcascade_profileface.xml')
+
+# To keep track of time when last audio was heard
+lastTime = 0
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
@@ -64,9 +67,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # Did we see an image?
     imageSeen = ( len(faces) != 0 )
-    print(imageSeen)
     if imageSeen:
-        playSound('./sounds/ric_flair_woo.wav')
+        curTime = time.time()
+        # has it been 5 minutes since last play?
+        if (curTime ) > lastTime + 300:
+            lastTime = curTime
+            playSound('./sounds/ric_flair_woo.wav')
 
     # Clear the captured frame
     rawCapture.truncate(0)
