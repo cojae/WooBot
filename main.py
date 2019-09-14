@@ -65,7 +65,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             curTime = time.time()
 
         # has it been 5 minutes since last play?
-        if (curTime ) > lastTime + 300:
+        if (curTime ) > lastTime + 5:
             lastTime = curTime
             playSound('./sounds/ric_flair_woo.wav')
 
