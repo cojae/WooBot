@@ -2,6 +2,7 @@ import picamera
 import picamera.array
 import time 
 import os
+import random
 
 import io
 import cv2
@@ -13,10 +14,9 @@ import pygame
 
 def decideSound():
     retString = ""
-    fileList = []
     fileList = [os.path.join("./sounds/",f) for f in os.listdir("./sounds")]
     print(fileList)
-    return fileList[0]
+    return fileList[random.randrange(0,len(fileList))]
 
 def playSound(soundFile):
     pygame.mixer.music.load(soundFile)
