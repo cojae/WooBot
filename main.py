@@ -1,6 +1,7 @@
 import picamera
 import picamera.array
 import time 
+import os
 
 import io
 import cv2
@@ -9,6 +10,13 @@ import numpy
 # This might be over-kill, but this library will do the audio playing
 # Perhaps find one that isn't as expansive as this one
 import pygame
+
+def decideSound():
+    retString = ""
+    fileList = []
+    fileList = [os.path.join("./sounds/",f) for f in os.listdir("./sounds")]
+    print(fileList)
+    return fileList[0]
 
 def playSound(soundFile):
     pygame.mixer.music.load(soundFile)
@@ -67,7 +75,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # has it been 5 minutes since last play?
         if (curTime ) > lastTime + 5:
             lastTime = curTime
-            playSound('./sounds/ric_flair_woo.wav')
+            playSound(decideSound())
 
     cv2.imshow('Stream',image)
 
