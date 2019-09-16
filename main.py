@@ -67,10 +67,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if imageSeen:
         # Put rectangle in every face it picks up
         for (x,y,w,h) in faces:
-            cv2.rectangle(image,(x,y),(x+w,y+h),(255,255,0),2)
+            small = cv2.imread("./flairFaces/flair")
+            resized = cv2.resize(small,(w,h))
+            image2 = image.copy()
+            image2[y:y+h,x:x+w] = resized
             roi_gray = grayImage[y:y+h, x:x+w]
             roi_color = image[y:y+h, x:x+w]
             curTime = time.time()
+            image = image2
 
         # has it been 5 minutes since last play?
         if (curTime ) > lastTime + 5:
