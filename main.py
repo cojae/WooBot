@@ -15,7 +15,6 @@ import pygame
 def decideSound():
     retString = ""
     fileList = [os.path.join("./sounds/",f) for f in os.listdir("./sounds")]
-    print(fileList)
     return fileList[random.randrange(0,len(fileList))]
 
 def playSound(soundFile):
@@ -67,17 +66,25 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if imageSeen:
         # Put rectangle in every face it picks up
         for (x,y,w,h) in faces:
-            small = cv2.imread("./flairFaces/ricFlairFace.jpg")
+            small = cv2.imread("./flairFaces/ricFlairFace.jpg",-1)
             resized = cv2.resize(small,(w,h))
-            image2 = image.copy()
-            image2[y:y+h,x:x+w] = resized
-            roi_gray = grayImage[y:y+h, x:x+w]
-            roi_color = image[y:y+h, x:x+w]
-            curTime = time.time()
-            image = image2
 
-        # has it been 5 minutes since last play?
-        if (curTime ) > lastTime + 5:
+            #Copy because image is read-only array
+            image2 = image.copy()
+
+            # Remove Black TODO
+            # Doesn't work correctly, makes too light and see through
+            #alphaSmall = resized / 255.0
+            #alphaImage = 1.0 - alphaSmall
+            #image2[y:y+h,x:x+w] = (alphaSmall * resized[:,:] + alphaImage * image2[y:y+h,x:x+w])
+
+            image2[y:y+h,x:x+w] = resized
+            #Set Image to be displayed
+            image = image2
+            curTime = time.time()
+
+        # has it been 7 seconds since last play?
+        if (curTime ) > lastTime + 10:
             lastTime = curTime
             playSound(decideSound())
 
