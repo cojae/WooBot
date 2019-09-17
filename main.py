@@ -67,7 +67,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if imageSeen:
         # Put rectangle in every face it picks up
         for (x,y,w,h) in faces:
-            small = cv2.imread("./flairFaces/flair")
+            small = cv2.imread("./flairFaces/ricFlairFace.jpg")
             resized = cv2.resize(small,(w,h))
             image2 = image.copy()
             image2[y:y+h,x:x+w] = resized
