@@ -23,15 +23,16 @@ def playSound(soundFile):
 
 # Initialize the camera and camera capture
 camera = picamera.PiCamera()
-rawCapture = picamera.array.PiRGBArray(camera, size=(640,480))
+rawCapture = picamera.array.PiRGBArray(camera, size=(800,608))
 
 # Initialize pygame which will be used to play audio
 pygame.init()
 
-camera.resolution = (640,480)
+#camera.resolution = (640,480)
+camera.resolution = (800,608)
 camera.vflip = False
 camera.hflip = False
-camera.framerate = 32
+camera.framerate = 15
 camera.brightness = 60
 
 # Camera WarmUp
