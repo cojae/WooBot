@@ -7,7 +7,7 @@ import io
 import cv2
 import numpy
 
-from inc import soundControl
+from inc import soundControl as sc
 
 
 # Initialize the camera and camera capture
@@ -77,7 +77,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # has it been 7 seconds since last play?
         if (curTime ) > lastTime + 10:
             lastTime = curTime
-            soundControl.playSound(soundControl.decideSound(dir_path))
+            sc.playSound(sc.decideSound(dir_path))
 
     cv2.imshow('Stream',image)
 
