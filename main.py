@@ -2,37 +2,23 @@ import picamera
 import picamera.array
 import time 
 import os
-import random
 
 import io
 import cv2
 import numpy
 
-# This might be over-kill, but this library will do the audio playing
-# Perhaps find one that isn't as expansive as this one
-import pygame
+from inc import soundControl
 
-def decideSound():
-    retString = ""
-    fileList = [os.path.join("./sounds/",f) for f in os.listdir("./sounds")]
-    return fileList[random.randrange(0,len(fileList))]
-
-def playSound(soundFile):
-    pygame.mixer.music.load(soundFile)
-    pygame.mixer.music.play()
 
 # Initialize the camera and camera capture
 camera = picamera.PiCamera()
 rawCapture = picamera.array.PiRGBArray(camera, size=(800,608))
 
-# Initialize pygame which will be used to play audio
-pygame.init()
-
 #camera.resolution = (640,480)
 camera.resolution = (800,608)
 camera.vflip = False
 camera.hflip = False
-camera.framerate = 15
+camera.framerate = 35
 camera.brightness = 60
 
 # Camera WarmUp
@@ -44,6 +30,10 @@ profileFace = cv2.CascadeClassifier('./dataset/haarcascade_profileface.xml')
 
 # To keep track of time when last audio was heard
 lastTime = 0
+
+# Directory path of application
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
@@ -87,7 +77,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # has it been 7 seconds since last play?
         if (curTime ) > lastTime + 10:
             lastTime = curTime
-            playSound(decideSound())
+            soundControl.playSound(soundControl.decideSound(dir_path))
 
     cv2.imshow('Stream',image)
 
