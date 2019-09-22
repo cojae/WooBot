@@ -1,4 +1,4 @@
-# This might be over-kill, but this library will do the audio playing
+# This might be overkill, but this library will do the audio playing
 # Perhaps find one that isn't as expansive as this one
 import pygame
 import random
